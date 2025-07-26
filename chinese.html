@@ -1,0 +1,281 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chinese Cuisine</title>
+    <style>
+        /* Reset and base styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 2em;
+        }
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        header p {
+            font-size: 1.2rem;
+        }
+        /* Marquee navigation styling */
+        .marquee {
+            background-color: #ddd;
+            padding: 10px;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .marquee ul {
+            list-style: none;
+            display: inline-block;
+            animation: marquee 20s linear infinite;
+        }
+        .marquee ul li {
+            display: inline-block;
+        }
+        .marquee a {
+            margin: 0 20px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+        }
+        .marquee a img {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+            border-radius: 5px;
+        }
+        .marquee a:hover {
+            color: #007bff;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+        .marquee ul:hover {
+            animation-play-state: paused;
+        }
+        /* Container and section styling */
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        .section {
+            margin-bottom: 40px;
+        }
+        .section h2 {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        /* Dish and Chef sections */
+        .dish, .chef {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .dish h3, .chef h3 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        .dish p, .chef p {
+            font-size: 1rem;
+            color: #666;
+        }
+        /* Contact section */
+        .contact-info a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .contact-info a:hover {
+            text-decoration: underline;
+        }
+        /* Footer styling */
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 1em;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+        footer p {
+            font-size: 0.9rem;
+        }
+        /* Responsive design */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            .marquee ul {
+                animation: none;
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+                align-items: center;
+            }
+            .marquee a {
+                margin: 10px 0;
+            }
+            .container {
+                padding: 0 10px;
+            }
+            .dish, .chef {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Chinese Cuisine</h1>
+        <p>Authentic Flavors from China | <a href="index.html">Home</a></p>
+    </header>
+
+     <div class="marquee">
+        <marquee behavior="scroll" direction="left">
+            <a href="chinese.html"><img src="chinese category/sweet-sour-spork2.jpg" alt="Chinese Cuisine">Chinese</a>
+            <a href="igbo.html"><img src="https://lowcarbafrica.com/wp-content/uploads/2018/06/Egusi-Soup-IG-1-1024x1024.webp" alt="Igbo Cuisine">Igbo</a>
+            <a href="yoruba.html"><img src="https://d2uqlwridla7kt.cloudfront.net/recipe-media/recipe-8ljqum2xv/h7w0y8ljqumyq0/amala-recipe-jpg" alt="Yoruba Cuisine">Yoruba</a>
+            <a href="european.html"><img src="https://www.recipetineats.com/tachyon/2021/02/Beef-Bourguignon_9.jpg?resize=900%2C1260&zoom=0.72"" alt="European Cuisine">European</a>
+            <a href="hausa.html"><img src="https://www.tasteofhome.com/wp-content/uploads/2025/07/Suya_TOHVS20_89779_BL_10_12_4.jpg?fit=700%2C1024" alt="Hausa Cuisine">Hausa</a>
+        </marquee>
+    </div>
+
+    <div class="container">
+        <div class="section">
+            <h2>Our Chinese Dishes</h2>
+            <div class="dish">
+                <img src="chinese category/kung-pao-chicken.jpg" alt="Kung Pao Chicken">
+                <div class="dish-text">
+                    <h3>Kung Pao Chicken</h3>
+                    <p>Spicy stir-fried chicken with peanuts, vegetables, and chili peppers.</p>
+                </div>
+            </div>
+            <div class="dish">
+                <img src="chinese category/Mapo-Tofu.jpg" alt="Mapo Tofu">
+                <div class="dish-text">
+                    <h3>Mapo Tofu</h3>
+                    <p>Soft tofu in a spicy, flavorful sauce with minced pork and Sichuan peppercorns.</p>
+                </div>
+            </div>
+            <div class="dish">
+                <img src="chinese category/dim-sum-garden-dumplings.jpg" alt="Dim Sum Platter">
+                <div class="dish-text">
+                    <h3>Dim Sum Platter</h3>
+                    <p>Assorted steamed buns, dumplings, and rolls, perfect for sharing.</p>
+                </div>
+            </div>
+            <div class="dish">
+                <img src="chinese category/20201111_Easy-Beef-Chow-Mein-2.jpg" alt="Beef Chow Mein">
+                <div class="dish-text">
+                    <h3>Beef Chow Mein</h3>
+                    <p>Stir-fried noodles with tender beef, vegetables, and savory sauce.</p>
+                </div>
+            </div>
+            <div class="dish">
+                <img src="chinese category/sweet-sour-spork2.jpg" alt="Sweet and Sour Pork">
+                <div class="dish-text">
+                    <h3>Sweet and Sour Pork</h3>
+                    <p>Crispy pork in a tangy, sweet sauce with pineapple and bell peppers.</p>
+                </div>
+            </div>
+            <div class="dish">
+                <img src="chinese category/IMG_1657-e1738095747646.jpg" alt="Peking Duck">
+                <div class="dish-text">
+                    <h3>Peking Duck</h3>
+                    <p>Roasted duck with crispy skin, served with pancakes and hoisin sauce.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Our Chinese Chefs</h2>
+            <div class="chef">
+                <img src="chinese category/Chef-John-Zhang-1024x586.jpg" alt="Chef Li Wei">
+                <div class="chef-text">
+                    <h3>Chef Li Wei</h3>
+                    <p>With 20 years of experience, Chef Li specializes in Sichuan cuisine.</p>
+                </div>
+            </div>
+            <div class="chef">
+                <img src="chinese category/martin.jpg" alt="Chef Zhang Mei">
+                <div class="chef-text">
+                    <h3>Chef Zhang Mei</h3>
+                    <p>Expert in Cantonese dim sum, bringing authentic flavors to your plate.</p>
+                </div>
+            </div>
+            <div class="chef">
+                <img src="chinese category/MaggieKitchen-600x756.jpg" alt="Chef Wang Jun">
+                <div class="chef-text">
+                    <h3>Chef Wang Jun</h3>
+                    <p>Master of Northern Chinese dishes, known for his Peking duck expertise.</p>
+                </div>
+            </div>
+        </div> 
+        <div class="section">
+            <a href="contact us.html">
+            <h2>Contact Us</h2>
+            </a>
+           
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2025 Localbud Restaurant. All rights reserved.</p>
+    </footer>
+</body>
+</html>

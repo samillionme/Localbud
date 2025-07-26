@@ -1,0 +1,281 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>European Cuisine</title>
+    <style>
+        /* Reset and base styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 2em;
+        }
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        header p {
+            font-size: 1.2rem;
+        }
+        /* Marquee navigation styling */
+        .marquee {
+            background-color: #ddd;
+            padding: 10px;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .marquee ul {
+            list-style: none;
+            display: inline-block;
+            animation: marquee 20s linear infinite;
+        }
+        .marquee ul li {
+            display: inline-block;
+        }
+        .marquee a {
+            margin: 0 20px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+        }
+        .marquee a img {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+            border-radius: 5px;
+        }
+        .marquee a:hover {
+            color: #007bff;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+        .marquee ul:hover {
+            animation-play-state: paused;
+        }
+        /* Container and section styling */
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        .section {
+            margin-bottom: 40px;
+        }
+        .section h2 {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        /* Dish and Chef sections */
+        .dish, .chef {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .dish h3, .chef h3 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        .dish p, .chef p {
+            font-size: 1rem;
+            color: #666;
+        }
+        /* Contact section */
+        .contact-info a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .contact-info a:hover {
+            text-decoration: underline;
+        }
+        /* Footer styling */
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 1em;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+        footer p {
+            font-size: 0.9rem;
+        }
+        /* Responsive design */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            .marquee ul {
+                animation: none;
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+                align-items: center;
+            }
+            .marquee a {
+                margin: 10px 0;
+            }
+            .container {
+                padding: 0 10px;
+            }
+            .dish, .chef {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>European Cuisine</h1>
+        <p>Classic Flavors from Europe | <a href="index.html">Home</a></p>
+    </header>
+
+    <div class="marquee">
+        <marquee behavior="scroll" direction="left">
+            <a href="chinese.html"><img src="chinese category/sweet-sour-spork2.jpg" alt="Chinese Cuisine">Chinese</a>
+            <a href="igbo.html"><img src="https://lowcarbafrica.com/wp-content/uploads/2018/06/Egusi-Soup-IG-1-1024x1024.webp" alt="Igbo Cuisine">Igbo</a>
+            <a href="yoruba.html"><img src="https://d2uqlwridla7kt.cloudfront.net/recipe-media/recipe-8ljqum2xv/h7w0y8ljqumyq0/amala-recipe-jpg" alt="Yoruba Cuisine">Yoruba</a>
+            <a href="european.html"><img src="https://www.recipetineats.com/tachyon/2021/02/Beef-Bourguignon_9.jpg?resize=900%2C1260&zoom=0.72"" alt="European Cuisine">European</a>
+            <a href="hausa.html"><img src="https://www.tasteofhome.com/wp-content/uploads/2025/07/Suya_TOHVS20_89779_BL_10_12_4.jpg?fit=700%2C1024" alt="Hausa Cuisine">Hausa</a>
+        </marquee>
+    </div>
+
+   <div class="container">
+        <div class="section">
+            <h2>Our European Dishes</h2>
+            <div class="dish">
+                <img src="https://www.recipetineats.com/tachyon/2021/02/Beef-Bourguignon_9.jpg?resize=900%2C1260&zoom=0.72"> 
+                <div>
+                    <h3>Beef Bourguignon</h3>
+                    <p>Slow-cooked beef in red wine with mushrooms and onions.</p>
+                </div>
+            </div>
+            <div class="dish">
+                <img src="https://tastesbetterfromscratch.com/wp-content/uploads/2023/03/Chicken-Parmesan-1-1086x1536.jpg" alt="Golden-brown chicken cutlet topped with marinara sauce and melted mozzarella">
+                <div>
+                    <h3>Chicken Parmesan</h3>
+                    <p>Breaded chicken cutlet topped with marinara and mozzarella.</p>
+                </div>
+            </div>
+            <div class="dish">
+                <img src="https://paleoleap.com/wp-content/uploads/2018/07/eggplant-zucchini-tomato-bake-1-1024x1536.jpg" alt="Colorful spiral of zucchini, eggplant, and tomatoes in a baked dish">
+                <div>
+                    <h3>Ratatouille</h3>
+                    <p>Vegetable stew with zucchini, eggplant, and tomatoes.</p>
+                </div>
+            </div>
+            <div class="dish">
+                <img src="https://diethood.com/wp-content/uploads/2022/03/paella-7-1024x1536.jpg" alt="Saffron-infused rice with shrimp, mussels, chicken, and chorizo">
+                <div>
+                    <h3>Paella</h3>
+                    <p>Spanish rice dish with seafood, chicken, and saffron.</p>
+                </div>
+            </div>
+            <div class="dish">
+                <img src="https://www.garlicandzest.com/wp-content/uploads/2024/02/lamb-shepherds-pie-15.jpg" alt="Hearty casserole of minced lamb and vegetables topped with mashed potatoes">
+                <div>
+                    <h3>Shepherd’s Pie</h3>
+                    <p>Minced lamb with vegetables, topped with mashed potatoes.</p>
+                </div>
+            </div>
+            <div class="dish">
+                <img src="https://cloudykitchen.com/wp-content/uploads/2023/07/square-of-tiramisu-on-plate-800x1200.jpg" alt="Slice of tiramisu with layers of coffee-soaked ladyfingers and mascarpone">
+                <div>
+                    <h3>Tiramisu</h3>
+                    <p>Italian dessert with coffee-soaked ladyfingers and mascarpone.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Our European Chefs</h2>
+            <div class="chef">
+                <img src="https://www.new-east-archive.org/images/uploads/thumbnails/2017/02/Chefs/_square/tg_2.jpg" alt="Chef Marie Dubois in a white chef’s coat in a professional kitchen">
+                <div>
+                    <h3>Chef Marie Dubois</h3>
+                    <p>French chef specializing in classic dishes like beef bourguignon.</p>
+                </div>
+            </div>
+            <div class="chef">
+                <img src="https://www.new-east-archive.org/images/uploads/thumbnails/2017/02/Chefs/_square/ts_2.jpg" alt="Chef Antonio Rossi tossing pasta in a pan, wearing a chef’s hat">
+                <div>
+                    <h3>Chef Antonio Rossi</h3>
+                    <p>Italian expert in pasta and desserts like tiramisu.</p>
+                </div>
+            </div>
+            <div class="chef">
+                <img src="https://www.new-east-archive.org/images/uploads/thumbnails/2017/02/Chefs/_square/ar_3.jpg" alt="Chef Elena García beside a vibrant paella pan in a modern kitchen">
+                <div>
+                    <h3>Chef Elena García</h3>
+                    <p>Spanish chef known for her authentic paella recipes.</p>
+                </div>
+            </div>
+        </div>
+         <div class="section">
+            <a href="contact us.html">
+            <h2>Contact Us</h2>
+            </a>
+           
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 Localbud Restaurant. All rights reserved.</p>
+    </footer>
+</body>
+</html>
